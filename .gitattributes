@@ -1,0 +1,5 @@
+# 改行コードはリポジトリ・作業ツリーとも LF に統一する
+* text=auto eol=lf
+
+# 変換してはいけないもの（tree-sitter のパーサーWASM）
+*.wasm binary

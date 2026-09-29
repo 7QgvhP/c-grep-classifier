@@ -56,6 +56,29 @@ function isInsideSubscriptIndex(node: Parser.SyntaxNode, left: Parser.SyntaxNode
 }
 
 /**
+ * ノードが配列サイズ（`array_declarator` の size 部分）の内側にあるかを判定する。
+ * `int hoge[A];` の A は宣言されている対象ではなく、大きさとして参照されているだけなので、
+ * 「定義」として分類しない。
+ */
+function isInsideArraySize(node: Parser.SyntaxNode): boolean {
+    let current: Parser.SyntaxNode | null = node;
+    while (current) {
+        const parent: Parser.SyntaxNode | null = current.parent;
+        if (!parent) {
+            return false;
+        }
+        if (parent.type === 'array_declarator') {
+            const size = parent.childForFieldName('size');
+            if (size && isDescendantOf(node, size)) {
+                return true;
+            }
+        }
+        current = parent;
+    }
+    return false;
+}
+
+/**
  * 出力（書き込み）の判定。
  * 最も優先度が高く、代入の左辺・インクリメント・アドレス取得が該当する。
  * 該当しない場合は null を返し、後続の判定へ委ねる。
@@ -172,6 +195,10 @@ function findInputContext(node: Parser.SyntaxNode): string | undefined {
  * 出力にも入力にも該当しなかったノードに対して評価される。
  */
 function checkDefinition(node: Parser.SyntaxNode, parent: Parser.SyntaxNode): ClassificationResult | null {
+    // 配列サイズは宣言の一部だが、宣言されている対象ではないため定義とはみなさない
+    if (isInsideArraySize(node)) {
+        return null;
+    }
     // typedef の宣言子
     if (parent.type === 'type_definition') {
         const declarator = parent.childForFieldName('declarator');

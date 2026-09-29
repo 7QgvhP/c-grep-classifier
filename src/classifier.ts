@@ -166,6 +166,14 @@ function checkInput(node: Parser.SyntaxNode, parent: Parser.SyntaxNode): Classif
     if (isInsideArraySize(node)) {
         return { category: '入力', detail: INPUT_GENERIC };
     }
+    // マクロ定義の置き換え値（`#define MAX (A + 1)` の右辺）も値の参照とみなす。
+    // 右辺は preproc_arg という1つのトークンとして解析されるため、内部の文脈までは判定できない
+    if (parent.type === 'preproc_def' || parent.type === 'preproc_function_def') {
+        const value = parent.childForFieldName('value');
+        if (value && isDescendantOf(node, value)) {
+            return { category: '入力', detail: INPUT_GENERIC };
+        }
+    }
     // 代入の左辺に含まれていても、配列添字として読まれている場合は書き込みではなく参照
     if (parent.type === 'assignment_expression') {
         const left = parent.childForFieldName('left');

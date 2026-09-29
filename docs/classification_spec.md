@@ -222,6 +222,27 @@ switch (hoge) { }    // hoge → 入力
 case hoge: break;    // hoge → 入力
 ```
 
+---
+
+#### パターン8: 宣言・定義の中で値として参照されている箇所
+
+宣言や定義の一部であっても、**宣言されている対象そのものではなく、値として読まれている**箇所は「入力」として扱います。
+
+```c
+int buf[hoge];              // hoge → 入力（配列の大きさ）
+enum e { X = hoge };        // hoge → 入力（enum定数の初期値）
+#define MAX (hoge + 1)      // hoge → 入力（マクロの置き換え値）
+```
+
+| 箇所 | 対象ノード | 判定 |
+|---|---|---|
+| 配列サイズ | `array_declarator` の `size` | 入力 |
+| enum定数の初期値 | `enumerator` の `value` | 入力 |
+| マクロ定義の右辺 | `preproc_def` / `preproc_function_def` の `value` | 入力 |
+
+> [!NOTE]
+> マクロの右辺は `preproc_arg` という1つのトークンとして解析されるため、内部の構文（条件式なのか演算なのか）までは判別できません。そのためサブ分類は一律「参照」となります。
+
 `switch` の評価対象や `case` のラベル値として参照されている場合。
 
 ---
@@ -402,12 +423,12 @@ GLOBAL SBYTE deftmp_real_es;   // hoge → 定義（expression_statement > prepr
 上記のすべてのパターンに合致せず、ASTのルートノードまで辿りきった場合に「その他」として分類されます。
 
 ```c
-// 具体例（稀なケース）
-#define HOGE 100
-//           ^^^ マクロの置き換え値のうち、preproc_argとして処理されなかった場合
+// 具体例
+goto retry_label;    // retry_label → その他（ラベルは値の読み書きではない）
+update_hoge(&x);     // update_hoge → その他（呼び出される関数名そのもの）
 ```
 
-通常の C 言語コードでは「その他」に分類されるケースは稀です。
+値の読み書きにも宣言にも該当しない箇所が対象です。通常の C 言語コードで「その他」に分類されるケースは多くありません。
 
 ---
 
@@ -422,7 +443,7 @@ GLOBAL SBYTE deftmp_real_es;   // hoge → 定義（expression_statement > prepr
 | | 初期化値 | `int x = hoge;` |
 | | 関数引数 | `func(hoge)`, `func(a + hoge)` |
 | | 戻り値 | `return hoge;` |
-| | 参照 | `a + hoge;`（上記のいずれにも属さない演算） |
+| | 参照 | `a + hoge;`（上記に属さない演算）、配列サイズ、マクロ右辺 |
 | | 文字列 | `puts("hoge")`, `'h'`, `#include <hoge.h>` |
 | 📤 出力 | 代入 | `hoge = 1;`, `hoge += 1;` |
 | | インクリメント | `hoge++`, `--hoge` |

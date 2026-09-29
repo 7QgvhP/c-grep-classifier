@@ -143,6 +143,13 @@ function inputContextOf(node: Parser.SyntaxNode, parent: Parser.SyntaxNode): str
     if (parent.type === 'switch_statement' || parent.type === 'case_statement') {
         return '条件判定';
     }
+    // enum 定数の初期値（`enum e { X = A };` の A）
+    if (parent.type === 'enumerator') {
+        const value = parent.childForFieldName('value');
+        if (value && isDescendantOf(node, value)) {
+            return '初期化値';
+        }
+    }
     return null;
 }
 
@@ -154,6 +161,10 @@ function checkInput(node: Parser.SyntaxNode, parent: Parser.SyntaxNode): Classif
     const detail = inputContextOf(node, parent);
     if (detail) {
         return { category: '入力', detail };
+    }
+    // 配列サイズ（`int hoge[A];` の A）は、大きさとして値が読まれているため参照とみなす
+    if (isInsideArraySize(node)) {
+        return { category: '入力', detail: INPUT_GENERIC };
     }
     // 代入の左辺に含まれていても、配列添字として読まれている場合は書き込みではなく参照
     if (parent.type === 'assignment_expression') {
@@ -195,10 +206,6 @@ function findInputContext(node: Parser.SyntaxNode): string | undefined {
  * 出力にも入力にも該当しなかったノードに対して評価される。
  */
 function checkDefinition(node: Parser.SyntaxNode, parent: Parser.SyntaxNode): ClassificationResult | null {
-    // 配列サイズは宣言の一部だが、宣言されている対象ではないため定義とはみなさない
-    if (isInsideArraySize(node)) {
-        return null;
-    }
     // typedef の宣言子
     if (parent.type === 'type_definition') {
         const declarator = parent.childForFieldName('declarator');
@@ -206,9 +213,12 @@ function checkDefinition(node: Parser.SyntaxNode, parent: Parser.SyntaxNode): Cl
             return { category: '定義', detail: '型定義' };
         }
     }
-    // enum の定数メンバー
+    // enum の定数メンバー。初期値部分（`X = A` の A）は定義ではないため名前側のみを対象とする
     if (parent.type === 'enumerator') {
-        return { category: '定義', detail: 'enum定数' };
+        const nameNode = parent.childForFieldName('name');
+        if (!nameNode || isDescendantOf(node, nameNode)) {
+            return { category: '定義', detail: 'enum定数' };
+        }
     }
     // 関数マクロのパラメータ
     if (parent.type === 'preproc_params') {

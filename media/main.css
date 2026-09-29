@@ -127,11 +127,17 @@ body {
     gap: 6px;
 }
 .category-count {
+    /* 行の高さをフォント既定（normal）に任せると文字が上下中央からずれるため、
+       line-height を確定させたうえで flex で中央寄せする */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     background-color: var(--vscode-badge-background);
     color: var(--vscode-badge-foreground);
-    padding: 1px 5px;
+    padding: 2px 6px;
     border-radius: 10px;
     font-size: 11px;
+    line-height: 1;
 }
 
 .category-items {

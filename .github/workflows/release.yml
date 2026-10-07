@@ -51,9 +51,9 @@ jobs:
           fi
           echo "version=${version}" >> "$GITHUB_OUTPUT"
 
-      # このリポジトリにはテストが未整備のため、TypeScript のビルドが通ることを検証する
-      - name: ビルドを検証する
-        run: npm run compile
+      # npm test はビルド（compile）も行うため、ビルドの検証も兼ねる
+      - name: テストを実行する
+        run: npm test
 
       - name: vsix を作成する
         run: npx --yes @vscode/vsce package

@@ -1,4 +1,4 @@
-import * as vscode from 'vscode';
+import type * as vscode from 'vscode';
 import Parser from 'web-tree-sitter';
 import { classifyIdentifier } from './classifier';
 import { ClassificationResult, GrepMatch } from './types';

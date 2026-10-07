@@ -1,4 +1,4 @@
-import * as vscode from 'vscode';
+import type * as vscode from 'vscode';
 
 /**
  * 分類カテゴリの定義（表示順・配色クラスを一元管理）

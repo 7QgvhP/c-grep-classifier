@@ -1,6 +1,9 @@
 # 開発用の設定・ソース類（配布物には不要）
 .github/**
 .vscode/**
+test/**
+out-test/**
+tsconfig.test.json
 .claude/**
 .vscode-test/**
 src/**

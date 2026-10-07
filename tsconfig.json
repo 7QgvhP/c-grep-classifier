@@ -14,6 +14,10 @@
     "noFallthroughCasesInSwitch": true,
     "esModuleInterop": true
   },
+  // 配布物のビルド対象は src のみ（test は tsconfig.test.json 側で扱う）
+  "include": [
+    "src"
+  ],
   "exclude": [
     "node_modules",
     ".vscode-test"

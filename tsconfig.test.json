@@ -1,0 +1,10 @@
+{
+  // テストは src と test の両方をコンパイルするため、rootDir を広げた専用設定にする。
+  // 配布物の out/ には影響させない。
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "rootDir": ".",
+    "outDir": "out-test"
+  },
+  "include": ["src", "test"]
+}

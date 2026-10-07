@@ -116,9 +116,23 @@ VS Code の設定画面で `C-Grep Classifier` を検索すると、以下の項
 npm install       # 依存関係の取得
 npm run compile   # TypeScript のビルド（out/ へ出力）
 npm run watch     # 変更監視ビルド
+npm test          # 自動テストの実行
 ```
 
 デバッグ実行は `F5`（Run Extension）で行います。
+
+### テスト
+
+`test/` に Node 標準の `node:test` によるテストを用意しています。追加のテストフレームワークは使用していません。
+
+```bash
+npm test
+```
+
+* **VS Code を起動しないヘッドレス方式**です。分類ロジック（`src/classifier.ts`）と一致箇所の列挙（`src/matcher.ts`）を直接呼び出して検証するため、数百ミリ秒で完了します。
+* `src/types.ts` と `src/matcher.ts` は `vscode` を型としてのみ参照しているため（`import type`）、Node 単体で読み込めます。
+* テストは `tsconfig.test.json` で `out-test/` へビルドされます。配布物の `out/` には影響しません。
+* テスト名末尾の `(vX.Y.Z)` は、その挙動が確定したバージョンを表します。
 
 ### リリース
 

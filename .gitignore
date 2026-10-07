@@ -2,3 +2,10 @@ node_modules/
 out/
 .vscode-test/
 *.vsix
+
+# テストのビルド成果物
+out-test/
+
+# test/ 配下に紛れ込んだビルド成果物（テストは out-test/ へ出力される）
+test/**/*.js
+test/**/*.js.map

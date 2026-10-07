@@ -1,4 +1,5 @@
 # 開発用の設定・ソース類（配布物には不要）
+.github/**
 .vscode/**
 .claude/**
 .vscode-test/**

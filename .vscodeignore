@@ -19,3 +19,6 @@ out/*.wasm
 
 # パッケージ化の成果物自体
 *.vsix
+
+# Claude Code 用のリポジトリ情報（配布物には不要）
+CLAUDE.md

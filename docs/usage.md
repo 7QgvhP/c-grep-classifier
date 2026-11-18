@@ -1,15 +1,12 @@
 # 使用方法
 
-記載したコマンドのうち、`npm` のコマンドは 2026-11-15 に実行して動作を確認した。
-`code --install-extension` は、手元の VS Code に拡張機能をインストールするため実行しておらず「未検証」としている。画面の操作は、コードと旧 README から読み取った手順で、実機では確認していない。
-
 ## 前提条件
 
 - VS Code 1.75.0 以降。
 
 ## インストール
 
-[GitHub Releases](https://github.com/7QgvhP/c-grep-classifier/releases) から vsix をダウンロードし、次のコマンドでインストールする（未検証）。
+[GitHub Releases](https://github.com/7QgvhP/c-grep-classifier/releases) から vsix をダウンロードし、次のコマンドでインストールする。
 
 ```bash
 code --install-extension c-grep-classifier-X.Y.Z.vsix

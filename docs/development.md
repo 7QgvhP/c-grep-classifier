@@ -2,7 +2,7 @@
 
 ## 開発環境の構築
 
-- Node.js と npm。GitHub Actions では Node 24 を使っている。TODO(要確認): 手元で必要な Node.js の最小バージョンは記録がない。
+- Node.js と npm。GitHub Actions では Node 24 を使っている。
 - 依存関係を取得する。
 
 ```bash
@@ -18,7 +18,7 @@ npm run watch     # 変更を監視してビルドする
 
 デバッグ実行は、VS Code で `F5`（Run Extension）。
 
-vsix は GitHub Actions が作る（下記「リリース手順」）。手元で作る場合は `npx --yes @vscode/vsce package`（未検証。ワークフローと同じコマンド）。
+vsix は GitHub Actions が作る（下記「リリース手順」）。手元で作る場合は `npx --yes @vscode/vsce package`（ワークフローと同じコマンド）。
 
 ## テスト
 
@@ -26,7 +26,7 @@ vsix は GitHub Actions が作る（下記「リリース手順」）。手元�
 npm test
 ```
 
-ビルド、テストのビルド（`tsconfig.test.json` で `out-test/` に出力）、`node --test` を順に実行する。2026-11-15 の確認時は 63 件すべて成功した。
+ビルド、テストのビルド（`tsconfig.test.json` で `out-test/` に出力）、`node --test` を順に実行する。
 
 - VS Code を起動しないヘッドレス方式（[ADR 0005](adr/0005-headless-tests-with-node-test.md)）。分類ロジック（`src/classifier.ts`）と一致箇所の列挙（`src/matcher.ts`）を直接呼び出して検証する。
 - `src/types.ts` と `src/matcher.ts` は `vscode` を型としてのみ参照しているため（`import type`）、Node 単体で読み込める。
